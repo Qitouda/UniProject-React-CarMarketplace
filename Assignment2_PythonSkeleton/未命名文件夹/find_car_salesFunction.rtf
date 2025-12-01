@@ -1,0 +1,140 @@
+{\rtf1\ansi\ansicpg936\cocoartf2820
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fnil\fcharset0 Menlo-Regular;}
+{\colortbl;\red255\green255\blue255;\red115\green207\blue184;\red20\green20\blue20;\red207\green214\blue228;
+\red233\green160\blue109;\red114\green201\blue195;\red205\green204\blue213;\red218\green124\blue212;\red229\green189\blue123;
+\red115\green207\blue184;\red20\green20\blue20;\red207\green214\blue228;\red233\green160\blue109;\red114\green201\blue195;
+\red205\green204\blue213;\red218\green124\blue212;}
+{\*\expandedcolortbl;;\cssrgb\c51373\c83922\c77255;\cssrgb\c10196\c10196\c10196;\cssrgb\c84706\c87059\c91373;
+\cssrgb\c93725\c69020\c50196;\cssrgb\c50980\c82353\c80784;\cssrgb\c83922\c83922\c86667;\cssrgb\c89020\c58039\c86275;\cssrgb\c92157\c78431\c55294;
+\cssrgb\c51373\c83922\c77255;\cssrgb\c10196\c10196\c10196;\cssrgb\c84706\c87059\c91373;\cssrgb\c93725\c69020\c50196;\cssrgb\c50980\c82353\c80784;
+\cssrgb\c83922\c83922\c86667;\cssrgb\c89020\c58039\c86275;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww18220\viewh8400\viewkind0
+\deftab720
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs24 \cf2 \cb3 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 CREATE OR REPLACE\cf4 \strokec4  \cf2 \strokec2 FUNCTION\cf4 \strokec4  \cf5 \strokec5 find_car_sales\cf4 \strokec4 (search_string \cf6 \strokec6 TEXT\cf4 \strokec4 )\cb1 \
+\cf2 \cb3 \strokec2 RETURNS\cf4 \strokec4  \cf2 \strokec2 TABLE\cf4 \strokec4  (\cb1 \
+\cb3     carsale_id \cf6 \strokec6 TEXT\cf4 \strokec4 ,\cb1 \
+\cb3     make \cf6 \strokec6 TEXT\cf4 \strokec4 ,\cb1 \
+\cb3     model \cf6 \strokec6 TEXT\cf4 \strokec4 ,\cb1 \
+\cb3     builtYear \cf6 \strokec6 TEXT\cf4 \strokec4 ,\cb1 \
+\cb3     odometer \cf6 \strokec6 TEXT\cf4 \strokec4 ,\cb1 \
+\cb3     price \cf6 \strokec6 TEXT\cf4 \strokec4 ,\cb1 \
+\cb3     isSold \cf6 \strokec6 TEXT\cf4 \strokec4 ,\cb1 \
+\cb3     sale_date \cf6 \strokec6 TEXT\cf4 \strokec4 ,\cb1 \
+\cb3     buyer \cf6 \strokec6 TEXT\cf4 \strokec4 ,\cb1 \
+\cb3     salesperson \cf6 \strokec6 TEXT\cf4 \cb1 \strokec4 \
+\cb3 ) \cf2 \strokec2 AS\cf4 \strokec4  $$\cb1 \
+\cf2 \cb3 \strokec2 BEGIN\cf4 \cb1 \strokec4 \
+\cb3     \cf2 \strokec2 IF\cf4 \strokec4  search_string \cf2 \strokec2 IS\cf4 \strokec4  \cf2 \strokec2 NULL\cf4 \strokec4  \cf2 \strokec2 OR\cf4 \strokec4  \cf5 \strokec5 TRIM\cf4 \strokec4 (search_string) \cf7 \strokec7 =\cf4 \strokec4  \cf8 \strokec8 ''\cf4 \strokec4  \cf2 \strokec2 OR\cf4 \cb1 \strokec4 \
+\cb3        \cf2 \strokec2 EXISTS\cf4 \strokec4  (\cf2 \strokec2 SELECT\cf4 \strokec4  \cf9 \strokec9 1\cf4 \strokec4  \cf2 \strokec2 FROM\cf4 \strokec4  Salesperson \cf2 \strokec2 WHERE\cf4 \strokec4  \cf5 \strokec5 LOWER\cf4 \strokec4 (UserName) \cf7 \strokec7 =\cf4 \strokec4  \cf5 \strokec5 LOWER\cf4 \strokec4 (\cf5 \strokec5 TRIM\cf4 \strokec4 (search_string))) \cf2 \strokec2 THEN\cf4 \cb1 \strokec4 \
+\cb3         \cf2 \strokec2 RETURN\cf4 \strokec4  QUERY\cb1 \
+\cb3         \cf2 \strokec2 SELECT\cf4 \strokec4  cs.CarSaleID::\cf6 \strokec6 text\cf4 \strokec4 ,\cb1 \
+\cb3                mk.MakeName::\cf6 \strokec6 text\cf4 \strokec4 ,\cb1 \
+\cb3                mo.ModelName::\cf6 \strokec6 text\cf4 \strokec4 ,\cb1 \
+\cb3                cs.BuiltYear::\cf6 \strokec6 text\cf4 \strokec4 ,\cb1 \
+\cb3                cs.Odometer::\cf6 \strokec6 text\cf4 \strokec4 ,\cb1 \
+\cb3                cs.Price::\cf6 \strokec6 text\cf4 \strokec4 ,\cb1 \
+\cb3                \cf2 \strokec2 CASE\cf4 \strokec4  \cf2 \strokec2 WHEN\cf4 \strokec4  cs.IsSold \cf2 \strokec2 THEN\cf4 \strokec4  \cf8 \strokec8 'True'\cf4 \strokec4  \cf2 \strokec2 ELSE\cf4 \strokec4  \cf8 \strokec8 'False'\cf4 \strokec4  \cf2 \strokec2 END\cf4 \strokec4  \cf2 \strokec2 AS\cf4 \strokec4  \cf8 \strokec8 "isSold"\cf4 \strokec4 ,\cb1 \
+\cb3                TO_CHAR(cs.SaleDate, \cf8 \strokec8 'DD-MM-YYYY'\cf4 \strokec4 )::\cf6 \strokec6 text\cf4 \strokec4 ,\cb1 \
+\cb3                (cu.FirstName \cf7 \strokec7 ||\cf4 \strokec4  \cf8 \strokec8 ' '\cf4 \strokec4  \cf7 \strokec7 ||\cf4 \strokec4  cu.LastName)::\cf6 \strokec6 text\cf4 \strokec4 ,\cb1 \
+\cb3                (sp.FirstName \cf7 \strokec7 ||\cf4 \strokec4  \cf8 \strokec8 ' '\cf4 \strokec4  \cf7 \strokec7 ||\cf4 \strokec4  sp.LastName)::\cf6 \strokec6 text\cf4 \cb1 \strokec4 \
+\cb3         \cf2 \strokec2 FROM\cf4 \strokec4  CarSales cs\cb1 \
+\cb3         \cf2 \strokec2 JOIN\cf4 \strokec4  Make mk \cf2 \strokec2 ON\cf4 \strokec4  cs.MakeCode \cf7 \strokec7 =\cf4 \strokec4  mk.MakeCode\cb1 \
+\cb3         \cf2 \strokec2 JOIN\cf4 \strokec4  Model mo \cf2 \strokec2 ON\cf4 \strokec4  cs.ModelCode \cf7 \strokec7 =\cf4 \strokec4  mo.ModelCode\cb1 \
+\cb3         \cf2 \strokec2 LEFT JOIN\cf4 \strokec4  Customer cu \cf2 \strokec2 ON\cf4 \strokec4  cs.BuyerID \cf7 \strokec7 =\cf4 \strokec4  cu.CustomerID\cb1 \
+\cb3         \cf2 \strokec2 LEFT JOIN\cf4 \strokec4  Salesperson sp \cf2 \strokec2 ON\cf4 \strokec4  cs.SalespersonID \cf7 \strokec7 =\cf4 \strokec4  sp.UserName\cb1 \
+\cb3         \cf2 \strokec2 WHERE\cf4 \strokec4  \cf5 \strokec5 LOWER\cf4 \strokec4 (cs.SalespersonID) \cf7 \strokec7 =\cf4 \strokec4  \cf5 \strokec5 LOWER\cf4 \strokec4 (\cf5 \strokec5 TRIM\cf4 \strokec4 (search_string));\cb1 \
+\cb3     \cf2 \strokec2 ELSE\cf4 \cb1 \strokec4 \
+\cb3         \cf2 \strokec2 RETURN\cf4 \strokec4  QUERY\cb1 \
+\cb3         \cf2 \strokec2 SELECT\cf4 \strokec4  cs.CarSaleID::\cf6 \strokec6 text\cf4 \strokec4 ,\cb1 \
+\cb3                mk.MakeName::\cf6 \strokec6 text\cf4 \strokec4 ,\cb1 \
+\cb3                mo.ModelName::\cf6 \strokec6 text\cf4 \strokec4 ,\cb1 \
+\cb3                cs.BuiltYear::\cf6 \strokec6 text\cf4 \strokec4 ,\cb1 \
+\cb3                cs.Odometer::\cf6 \strokec6 text\cf4 \strokec4 ,\cb1 \
+\cb3                cs.Price::\cf6 \strokec6 text\cf4 \strokec4 ,\cb1 \
+\cb3                \cf2 \strokec2 CASE\cf4 \strokec4  \cf2 \strokec2 WHEN\cf4 \strokec4  cs.IsSold \cf2 \strokec2 THEN\cf4 \strokec4  \cf8 \strokec8 'True'\cf4 \strokec4  \cf2 \strokec2 ELSE\cf4 \strokec4  \cf8 \strokec8 'False'\cf4 \strokec4  \cf2 \strokec2 END\cf4 \strokec4  \cf2 \strokec2 AS\cf4 \strokec4  \cf8 \strokec8 "isSold"\cf4 \strokec4 ,\cb1 \
+\cb3                TO_CHAR(cs.SaleDate, \cf8 \strokec8 'DD-MM-YYYY'\cf4 \strokec4 )::\cf6 \strokec6 text\cf4 \strokec4 ,\cb1 \
+\cb3                (cu.FirstName \cf7 \strokec7 ||\cf4 \strokec4  \cf8 \strokec8 ' '\cf4 \strokec4  \cf7 \strokec7 ||\cf4 \strokec4  cu.LastName)::\cf6 \strokec6 text\cf4 \strokec4 ,\cb1 \
+\cb3                (sp.FirstName \cf7 \strokec7 ||\cf4 \strokec4  \cf8 \strokec8 ' '\cf4 \strokec4  \cf7 \strokec7 ||\cf4 \strokec4  sp.LastName)::\cf6 \strokec6 text\cf4 \cb1 \strokec4 \
+\cb3         \cf2 \strokec2 FROM\cf4 \strokec4  CarSales cs\cb1 \
+\cb3         \cf2 \strokec2 JOIN\cf4 \strokec4  Make mk \cf2 \strokec2 ON\cf4 \strokec4  cs.MakeCode \cf7 \strokec7 =\cf4 \strokec4  mk.MakeCode\cb1 \
+\cb3         \cf2 \strokec2 JOIN\cf4 \strokec4  Model mo \cf2 \strokec2 ON\cf4 \strokec4  cs.ModelCode \cf7 \strokec7 =\cf4 \strokec4  mo.ModelCode\cb1 \
+\cb3         \cf2 \strokec2 LEFT JOIN\cf4 \strokec4  Customer cu \cf2 \strokec2 ON\cf4 \strokec4  cs.BuyerID \cf7 \strokec7 =\cf4 \strokec4  cu.CustomerID\cb1 \
+\cb3         \cf2 \strokec2 LEFT JOIN\cf4 \strokec4  Salesperson sp \cf2 \strokec2 ON\cf4 \strokec4  cs.SalespersonID \cf7 \strokec7 =\cf4 \strokec4  sp.UserName\cb1 \
+\cb3         \cf2 \strokec2 WHERE\cf4 \strokec4  (\cb1 \
+\cb3             mk.MakeName ILIKE \cf8 \strokec8 '%'\cf4 \strokec4  \cf7 \strokec7 ||\cf4 \strokec4  search_string \cf7 \strokec7 ||\cf4 \strokec4  \cf8 \strokec8 '%'\cf4 \strokec4  \cf2 \strokec2 OR\cf4 \cb1 \strokec4 \
+\cb3             mo.ModelName ILIKE \cf8 \strokec8 '%'\cf4 \strokec4  \cf7 \strokec7 ||\cf4 \strokec4  search_string \cf7 \strokec7 ||\cf4 \strokec4  \cf8 \strokec8 '%'\cf4 \strokec4  \cf2 \strokec2 OR\cf4 \cb1 \strokec4 \
+\cb3             (cu.FirstName \cf7 \strokec7 ||\cf4 \strokec4  \cf8 \strokec8 ' '\cf4 \strokec4  \cf7 \strokec7 ||\cf4 \strokec4  cu.LastName) ILIKE \cf8 \strokec8 '%'\cf4 \strokec4  \cf7 \strokec7 ||\cf4 \strokec4  search_string \cf7 \strokec7 ||\cf4 \strokec4  \cf8 \strokec8 '%'\cf4 \strokec4  \cf2 \strokec2 OR\cf4 \cb1 \strokec4 \
+\cb3             (sp.FirstName \cf7 \strokec7 ||\cf4 \strokec4  \cf8 \strokec8 ' '\cf4 \strokec4  \cf7 \strokec7 ||\cf4 \strokec4  sp.LastName) ILIKE \cf8 \strokec8 '%'\cf4 \strokec4  \cf7 \strokec7 ||\cf4 \strokec4  search_string \cf7 \strokec7 ||\cf4 \strokec4  \cf8 \strokec8 '%'\cf4 \cb1 \strokec4 \
+\cb3         )\cb1 \
+\cb3         \cf2 \strokec2 AND\cf4 \strokec4  \cf2 \strokec2 NOT\cf4 \strokec4  (cs.IsSold \cf7 \strokec7 =\cf4 \strokec4  TRUE \cf2 \strokec2 AND\cf4 \strokec4  cs.SaleDate \cf7 \strokec7 <\cf4 \strokec4  (CURRENT_DATE \cf7 \strokec7 -\cf4 \strokec4  INTERVAL \cf8 \strokec8 '3 years'\cf4 \strokec4 ))\cb1 \
+\cb3         \cf2 \strokec2 ORDER BY\cf4 \strokec4  cs.IsSold \cf2 \strokec2 ASC\cf4 \strokec4 , cs.SaleDate \cf2 \strokec2 ASC\cf4 \strokec4 , mk.MakeName \cf2 \strokec2 ASC\cf4 \strokec4 , mo.ModelName \cf2 \strokec2 ASC\cf4 \strokec4 ;\cb1 \
+\cb3     \cf2 \strokec2 END\cf4 \strokec4  \cf2 \strokec2 IF\cf4 \strokec4 ;\cb1 \
+\cf2 \cb3 \strokec2 END\cf4 \strokec4 ;\cb1 \
+\cb3 $$ \cf2 \strokec2 LANGUAGE\cf4 \strokec4  plpgsql;\cb1 \
+\
+\pard\pardeftab720\partightenfactor0
+\cf10 \cb11 \outl0\strokewidth0 CREATE OR REPLACE\cf12  \cf10 FUNCTION\cf12  \cf13 find_car_sales\cf12 (search_string \cf14 TEXT\cf12 )\cb1 \
+\cf10 \cb11 RETURNS\cf12  \cf10 TABLE\cf12  (\cb1 \
+\cb11     carsale_id \cf14 TEXT\cf12 ,\cb1 \
+\cb11     make \cf14 TEXT\cf12 ,\cb1 \
+\cb11     model \cf14 TEXT\cf12 ,\cb1 \
+\cb11     builtYear \cf14 TEXT\cf12 ,\cb1 \
+\cb11     odometer \cf14 TEXT\cf12 ,\cb1 \
+\cb11     price \cf14 TEXT\cf12 ,\cb1 \
+\cb11     isSold \cf14 TEXT\cf12 ,\cb1 \
+\cb11     sale_date \cf14 TEXT\cf12 ,\cb1 \
+\cb11     buyer \cf14 TEXT\cf12 ,\cb1 \
+\cb11     salesperson \cf14 TEXT\cf12 \cb1 \
+\cb11 ) \cf10 AS\cf12  $$\cb1 \
+\cf10 \cb11 BEGIN\cf12 \cb1 \
+\cb11     \cf10 IF\cf12  search_string \cf10 IS\cf12  \cf10 NULL\cf12  \cf10 OR\cf12  search_string \cf15 =\cf12  \cf16 ''\cf12  \cf10 THEN\cf12 \cb1 \
+\cb11         \cf10 RETURN\cf12  QUERY\cb1 \
+\cb11         \cf10 SELECT\cf12  cs.CarSaleID::\cf14 text\cf12 ,\cb1 \
+\cb11                mk.MakeName::\cf14 text\cf12 ,\cb1 \
+\cb11                mo.ModelName::\cf14 text\cf12 ,\cb1 \
+\cb11                cs.BuiltYear::\cf14 text\cf12 ,\cb1 \
+\cb11                cs.Odometer::\cf14 text\cf12 ,\cb1 \
+\cb11                cs.Price::\cf14 text\cf12 ,\cb1 \
+\cb11                \cf10 CASE\cf12  \cf10 WHEN\cf12  cs.IsSold \cf10 THEN\cf12  \cf16 'True'\cf12  \cf10 ELSE\cf12  \cf16 'False'\cf12  \cf10 END\cf12  \cf10 AS\cf12  \cf16 "isSold"\cf12 ,\cb1 \
+\cb11                TO_CHAR(cs.SaleDate, \cf16 'DD-MM-YYYY'\cf12 )::\cf14 text\cf12 ,\cb1 \
+\cb11                (cu.FirstName \cf15 ||\cf12  \cf16 ' '\cf12  \cf15 ||\cf12  cu.LastName)::\cf14 text\cf12 ,\cb1 \
+\cb11                (sp.FirstName \cf15 ||\cf12  \cf16 ' '\cf12  \cf15 ||\cf12  sp.LastName)::\cf14 text\cf12 \cb1 \
+\cb11         \cf10 FROM\cf12  CarSales cs\cb1 \
+\cb11         \cf10 JOIN\cf12  Make mk \cf10 ON\cf12  cs.MakeCode \cf15 =\cf12  mk.MakeCode\cb1 \
+\cb11         \cf10 JOIN\cf12  Model mo \cf10 ON\cf12  cs.ModelCode \cf15 =\cf12  mo.ModelCode\cb1 \
+\cb11         \cf10 LEFT JOIN\cf12  Customer cu \cf10 ON\cf12  cs.BuyerID \cf15 =\cf12  cu.CustomerID\cb1 \
+\cb11         \cf10 LEFT JOIN\cf12  Salesperson sp \cf10 ON\cf12  cs.SalespersonID \cf15 =\cf12  sp.UserName\cb1 \
+\cb11         \cf10 WHERE\cf12  \cf10 NOT\cf12  (cs.IsSold \cf15 =\cf12  TRUE \cf10 AND\cf12  cs.SaleDate \cf15 <\cf12  (CURRENT_DATE \cf15 -\cf12  INTERVAL \cf16 '3 years'\cf12 ))\cb1 \
+\cb11         \cf10 ORDER BY\cf12  cs.IsSold \cf10 ASC\cf12 , cs.SaleDate \cf10 ASC\cf12 , mk.MakeName \cf10 ASC\cf12 , mo.ModelName \cf10 ASC\cf12 ;\cb1 \
+\cb11     \cf10 ELSE\cf12 \cb1 \
+\cb11         \cf10 RETURN\cf12  QUERY\cb1 \
+\cb11         \cf10 SELECT\cf12  cs.CarSaleID::\cf14 text\cf12 ,\cb1 \
+\cb11                mk.MakeName::\cf14 text\cf12 ,\cb1 \
+\cb11                mo.ModelName::\cf14 text\cf12 ,\cb1 \
+\cb11                cs.BuiltYear::\cf14 text\cf12 ,\cb1 \
+\cb11                cs.Odometer::\cf14 text\cf12 ,\cb1 \
+\cb11                cs.Price::\cf14 text\cf12 ,\cb1 \
+\cb11                \cf10 CASE\cf12  \cf10 WHEN\cf12  cs.IsSold \cf10 THEN\cf12  \cf16 'True'\cf12  \cf10 ELSE\cf12  \cf16 'False'\cf12  \cf10 END\cf12  \cf10 AS\cf12  \cf16 "isSold"\cf12 ,\cb1 \
+\cb11                TO_CHAR(cs.SaleDate, \cf16 'DD-MM-YYYY'\cf12 )::\cf14 text\cf12 ,\cb1 \
+\cb11                (cu.FirstName \cf15 ||\cf12  \cf16 ' '\cf12  \cf15 ||\cf12  cu.LastName)::\cf14 text\cf12 ,\cb1 \
+\cb11                (sp.FirstName \cf15 ||\cf12  \cf16 ' '\cf12  \cf15 ||\cf12  sp.LastName)::\cf14 text\cf12 \cb1 \
+\cb11         \cf10 FROM\cf12  CarSales cs\cb1 \
+\cb11         \cf10 JOIN\cf12  Make mk \cf10 ON\cf12  cs.MakeCode \cf15 =\cf12  mk.MakeCode\cb1 \
+\cb11         \cf10 JOIN\cf12  Model mo \cf10 ON\cf12  cs.ModelCode \cf15 =\cf12  mo.ModelCode\cb1 \
+\cb11         \cf10 LEFT JOIN\cf12  Customer cu \cf10 ON\cf12  cs.BuyerID \cf15 =\cf12  cu.CustomerID\cb1 \
+\cb11         \cf10 LEFT JOIN\cf12  Salesperson sp \cf10 ON\cf12  cs.SalespersonID \cf15 =\cf12  sp.UserName\cb1 \
+\cb11         \cf10 WHERE\cf12  (\cb1 \
+\cb11             mk.MakeName ILIKE \cf16 '%'\cf12  \cf15 ||\cf12  search_string \cf15 ||\cf12  \cf16 '%'\cf12  \cf10 OR\cf12 \cb1 \
+\cb11             mo.ModelName ILIKE \cf16 '%'\cf12  \cf15 ||\cf12  search_string \cf15 ||\cf12  \cf16 '%'\cf12  \cf10 OR\cf12 \cb1 \
+\cb11             (cu.FirstName \cf15 ||\cf12  \cf16 ' '\cf12  \cf15 ||\cf12  cu.LastName) ILIKE \cf16 '%'\cf12  \cf15 ||\cf12  search_string \cf15 ||\cf12  \cf16 '%'\cf12  \cf10 OR\cf12 \cb1 \
+\cb11             (sp.FirstName \cf15 ||\cf12  \cf16 ' '\cf12  \cf15 ||\cf12  sp.LastName) ILIKE \cf16 '%'\cf12  \cf15 ||\cf12  search_string \cf15 ||\cf12  \cf16 '%'\cf12 \cb1 \
+\cb11         )\cb1 \
+\cb11         \cf10 AND\cf12  \cf10 NOT\cf12  (cs.IsSold \cf15 =\cf12  TRUE \cf10 AND\cf12  cs.SaleDate \cf15 <\cf12  (CURRENT_DATE \cf15 -\cf12  INTERVAL \cf16 '3 years'\cf12 ))\cb1 \
+\cb11         \cf10 ORDER BY\cf12  cs.IsSold \cf10 ASC\cf12 , cs.SaleDate \cf10 ASC\cf12 , mk.MakeName \cf10 ASC\cf12 , mo.ModelName \cf10 ASC\cf12 ;\cb1 \
+\cb11     \cf10 END\cf12  \cf10 IF\cf12 ;\cb1 \
+\cf10 \cb11 END\cf12 ;\cb1 \
+\cb11 $$ \cf10 LANGUAGE\cf12  plpgsql;\cb1 \
+}
